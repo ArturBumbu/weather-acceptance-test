@@ -29,7 +29,6 @@ public class WeatherSteps {
 
     private WebDriver browser;
 
-    @Value("app.url")
     private String appUrl = "http://localhost:8080/";
 
     private WebElement city_input;
@@ -38,13 +37,26 @@ public class WeatherSteps {
 
     @Before
     public void setup() {
-        log.info("Initial setup for a page");
-        System.setProperty("webdriver.chrome.driver", "lib/chromedriver");
+        setUpDriverEnvVariable();
+        initChromeDriver();
+    }
+
+    private void initChromeDriver() {
         browser = new ChromeDriver();
         browser.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
         browser.manage().timeouts().setScriptTimeout(10, TimeUnit.SECONDS);
         browser.manage().timeouts().pageLoadTimeout(10, TimeUnit.SECONDS);
+    }
 
+    private void setUpDriverEnvVariable() {
+        String os = System.getProperty("os.name");
+        String chromeDriverLocation = "";
+        if (os.contains("Linux") || os.contains("Unix")) {
+            chromeDriverLocation = "lib/chromedriver";
+        } else if (os.contains("Windows")) {
+            chromeDriverLocation = "lib/chromedriver.exe";
+        }
+        System.setProperty("webdriver.chrome.driver", chromeDriverLocation);
     }
 
     @After
